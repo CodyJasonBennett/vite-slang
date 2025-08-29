@@ -1,0 +1,35 @@
+{
+  "name": "vite-slang",
+  "version": "0.0.0",
+  "description": "Vite plugin to use Slang shaders on the web.",
+  "keywords": [
+    "shaders",
+    "slang",
+    "glsl",
+    "wgsl",
+    "webgl",
+    "webgpu",
+    "graphics",
+    "3d",
+    "gpu",
+    "compiler",
+    "vite"
+  ],
+  "author": "Cody Bennett (https://github.com/CodyJasonBennett)",
+  "homepage": "https://github.com/CodyJasonBennett/vite-slang",
+  "repository": "https://github.com/CodyJasonBennett/vite-slang",
+  "license": "MIT",
+  "files": [
+    "src/*"
+  ],
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "exports": "./src/index.js",
+  "sideEffects": false,
+  "devDependencies": {
+    "vite": "^7.1.3"
+  },
+  "peerDependencies": {
+    "vite": "*"
+  }
+}
