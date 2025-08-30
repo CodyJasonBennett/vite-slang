@@ -50,11 +50,10 @@ FragmentStageOutput fragmentMain() : SV_Target
 
 ```js
 // app.js
-import wgslCode from './shader.slang'
+import code from './shader.slang'
+import { code, reflection } from './shader.slang'
 
-const shader = device.createShaderModule({
-  code: wgslCode,
-})
+const shader = device.createShaderModule({ code })
 
 const pipeline = device.createRenderPipeline({
   vertex: {
@@ -68,4 +67,6 @@ const pipeline = device.createRenderPipeline({
   },
   layout: 'auto',
 })
+
+console.log(reflection) // metadata about entry points, bindings, etc.
 ```
