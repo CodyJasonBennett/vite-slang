@@ -40,7 +40,9 @@ let globalSession = null
  * @param {import('./index.js').ViteSlangOptions} options
  * @returns {import('vite').PluginOption}
  */
-function viteSlang(options = { target: 'WGSL', filter: /\.slang$/ }) {
+function viteSlang(options) {
+  options = { target: 'WGSL', filter: /\.slang$/, ...options }
+
   return {
     name: 'vite-slang',
     transform: {
@@ -62,16 +64,19 @@ function viteSlang(options = { target: 'WGSL', filter: /\.slang$/ }) {
           // Lazy load Slang WASM so this module can be used in ESM/CJS/UMD contexts (no top-level-await)
           if (!slangPromise) slangPromise = slangModule()
           const slang = await slangPromise
+          if (!globalSession) globalSession = slang.createGlobalSession()
 
-          let wasmCompileTarget = -1
+          // Initialize compiler target
+          let wasmCompileTarget = null
           for (const target of slang.getCompileTargets()) {
             if (target.name == options.target) {
               wasmCompileTarget = target.value
             }
           }
+          if (wasmCompileTarget === null) {
+            throw new Error(`Unsupported Slang target: ${options.target}.`)
+          }
 
-          // Initialize compiler target
-          if (!globalSession) globalSession = slang.createGlobalSession()
           session = globalSession.createSession(wasmCompileTarget)
           if (!session) {
             throw new Error(`Unable to create Slang session for ${options.target} target. Please file an issue.`)
@@ -110,18 +115,9 @@ function viteSlang(options = { target: 'WGSL', filter: /\.slang$/ }) {
           }
 
           // Compile shader with reflection
-
           /** @type {import('./slang-2025.15-wasm/slang-wasm.js').ComponentType} */
           const linkedProgram = session.createCompositeComponentType(components).link()
-
-          // let shader = ''
-          // for (let i = 0; i < count; i++) {
-          //   // NOTE: this is future-proof over getTargetCode() for non-WGSL targets
-          //   shader += linkedProgram.getEntryPointCode(i /* entryPointIndex */, 0 /* targetIndex */) + '\n'
-          // }
-          // shader.trim()
           const shader = linkedProgram.getTargetCode(0)
-
           const reflection = linkedProgram.getLayout(0).toJsonObject()
 
           // Export with overloads for default export or named exports for reflection (see slang.d.ts)
