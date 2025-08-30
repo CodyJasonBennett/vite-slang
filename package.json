@@ -27,9 +27,14 @@
   "exports": "./src/index.js",
   "sideEffects": false,
   "devDependencies": {
-    "vite": "^7.1.3"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "vite": "*"
+  },
+  "scripts": {
+    "test": "vitest run && tsc"
   }
 }
