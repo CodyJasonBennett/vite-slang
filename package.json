@@ -1,6 +1,6 @@
 {
   "name": "vite-slang",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vite plugin to use Slang shaders on the web.",
   "keywords": [
     "shaders",
