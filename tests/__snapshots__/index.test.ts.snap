@@ -161,23 +161,195 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
 }
 `;
 
+exports[`viteSlang > can resolve #include directives 1`] = `
+{
+  "code": "struct SLANG_ParameterGroup_Globals_std140_0
+{
+    @align(16) time_0 : f32,
+};
+
+@binding(0) @group(0) var<uniform> Globals_0 : SLANG_ParameterGroup_Globals_std140_0;
+struct vertexOutput_0
+{
+    @builtin(position) output_0 : vec4<f32>,
+};
+
+@vertex
+fn vmain(@builtin(vertex_index) vertexIndex_0 : u32) -> vertexOutput_0
+{
+    var _S1 : vertexOutput_0 = vertexOutput_0( vec4<f32>(vec2<f32>(f32((((vertexIndex_0 << (u32(1)))) & (u32(2)))), f32((vertexIndex_0 & (u32(2))))) * vec2<f32>(2.0f) - vec2<f32>(1.0f), 0.0f, 1.0f) );
+    return _S1;
+}
+
+struct pixelOutput_0
+{
+    @location(0) output_1 : vec4<f32>,
+};
+
+@fragment
+fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
+{
+    var _S2 : pixelOutput_0 = pixelOutput_0( vec4<f32>(vec3<f32>(0.80000001192092896f, 0.69999998807907104f, 1.0f) + vec3<f32>(0.30000001192092896f) * cos(normalize(position_0.xy / vec2<f32>(position_0.w)).xyx + vec3<f32>(Globals_0.time_0)), 1.0f) );
+    return _S2;
+}
+
+",
+  "reflection": {
+    "entryPoints": [
+      {
+        "name": "vmain",
+        "parameters": [
+          {
+            "name": "vertexIndex",
+            "semanticName": "SV_VERTEXID",
+            "type": {
+              "kind": "scalar",
+              "scalarType": "uint32",
+            },
+          },
+        ],
+        "result": {
+          "semanticName": "SV_POSITION",
+          "type": {
+            "elementCount": 4,
+            "elementType": {
+              "kind": "scalar",
+              "scalarType": "float32",
+            },
+            "kind": "vector",
+          },
+        },
+        "stage": "vertex",
+      },
+      {
+        "name": "fmain",
+        "parameters": [
+          {
+            "name": "position",
+            "semanticName": "SV_POSITION",
+            "type": {
+              "elementCount": 4,
+              "elementType": {
+                "kind": "scalar",
+                "scalarType": "float32",
+              },
+              "kind": "vector",
+            },
+          },
+        ],
+        "result": {
+          "binding": {
+            "index": 0,
+            "kind": "varyingOutput",
+          },
+          "semanticName": "SV_TARGET",
+          "stage": "fragment",
+          "type": {
+            "elementCount": 4,
+            "elementType": {
+              "kind": "scalar",
+              "scalarType": "float32",
+            },
+            "kind": "vector",
+          },
+        },
+        "stage": "fragment",
+      },
+    ],
+    "parameters": [
+      {
+        "binding": {
+          "index": 0,
+          "kind": "descriptorTableSlot",
+        },
+        "name": "Globals",
+        "type": {
+          "containerVarLayout": {
+            "binding": {
+              "index": 0,
+              "kind": "descriptorTableSlot",
+            },
+          },
+          "elementType": {
+            "fields": [
+              {
+                "binding": {
+                  "elementStride": 0,
+                  "kind": "uniform",
+                  "offset": 0,
+                  "size": 4,
+                },
+                "name": "time",
+                "type": {
+                  "kind": "scalar",
+                  "scalarType": "float32",
+                },
+              },
+            ],
+            "kind": "struct",
+          },
+          "elementVarLayout": {
+            "binding": {
+              "elementStride": 0,
+              "kind": "uniform",
+              "offset": 0,
+              "size": 16,
+            },
+            "type": {
+              "fields": [
+                {
+                  "binding": {
+                    "elementStride": 0,
+                    "kind": "uniform",
+                    "offset": 0,
+                    "size": 4,
+                  },
+                  "name": "time",
+                  "type": {
+                    "kind": "scalar",
+                    "scalarType": "float32",
+                  },
+                },
+              ],
+              "kind": "struct",
+            },
+          },
+          "kind": "constantBuffer",
+        },
+      },
+    ],
+  },
+}
+`;
+
 exports[`viteSlang > throws if entrypoints are not defined 1`] = `
-[Error: [31m[vite-slang] An entrypoint must be defined with a shader stage attribute! Try adding [shader("fragment")] before your entrypoint method.[39m
-file: [36mshader.slang[39m]
+"[31m[vite-slang] An entrypoint must be defined with a shader stage attribute! Try adding [shader("fragment")] before your entrypoint method.[39m
+"
 `;
 
 exports[`viteSlang > throws on shader compilation error 1`] = `
-[Error: [31m[vite-slang] USER error: shader.slang(5): error 30015: undefined identifier 'error'.
-    error;
-    ^~~~~
+"[31m[vite-slang] USER error: C:/Users/Cody Bennett/Documents/GitHub/vite-slang/tests/shaders/broken.slang(4): error 30015: undefined identifier 'error'.
+  error;
+  ^~~~~
 (0): error 39999: import of module 'shader' failed because of a compilation error
 (0): fatal error 39999: compilation ceased
 abort compilation: (0): fatal error 39999: compilation ceased
 [39m
-file: [36mshader.slang[39m]
+"
+`;
+
+exports[`viteSlang > throws on unresolved #include directive 1`] = `
+"[31m[vite-slang] USER error: C:/Users/Cody Bennett/Documents/GitHub/vite-slang/tests/shaders/include-error.slang(4): error 15300: failed to find include file 'include-2.slang'
+#include "include-2.slang"
+         ^~~~~~~~~~~~~~~~~
+(0): error 39999: import of module 'shader' failed because of a compilation error
+(0): fatal error 39999: compilation ceased
+abort compilation: (0): fatal error 39999: compilation ceased
+[39m
+"
 `;
 
 exports[`viteSlang > throws on unsupported target 1`] = `
-[Error: [31m[vite-slang] Unsupported Slang target: unsupported.[39m
-file: [36mshader.slang[39m]
+"[31m[vite-slang] Unsupported Slang target: unsupported.[39m
+"
 `;

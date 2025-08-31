@@ -13,7 +13,6 @@ type StringFilter<Value = string | RegExp> =
       exclude?: Value | Array<Value>
     }
 
-// TODO: How to support GLSL + WGSL compilation as an API? Filter to allow platform-specific code?
 export interface ViteSlangOptions {
   /**
    * The output {@link SlangCompileTarget} to transform Slang shaders to.

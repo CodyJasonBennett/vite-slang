@@ -1,11 +1,7 @@
 import { transformWithEsbuild } from 'vite'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import slangModule from './slang-2025.15-wasm/slang-wasm.js'
-
-const SLANG_STAGES = {
-  vertex: 1,
-  fragment: 5,
-  compute: 6,
-}
 
 /**
  * Tests a Vite filter against a file id.
@@ -29,6 +25,14 @@ function testFilter(id, filter) {
     return true
   }
 }
+
+const SLANG_STAGES = {
+  vertex: 1,
+  fragment: 5,
+  compute: 6,
+}
+
+const IMPORT_REGEX = /^\s*#include\s+"([^"]+)"/gm
 
 /** @type {Promise<import('./slang-2025.15-wasm/slang-wasm.js').MainModule> | null} */
 let slangPromise = null
@@ -82,9 +86,19 @@ function viteSlang(options) {
             throw new Error(`Unable to create Slang session for ${options.target} target. Please file an issue.`)
           }
 
-          // TODO: module stitching and/or non-standard preprocessor unfolding?
           /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
-          const module = session.loadModuleFromSource(code, 'shader', id)
+          const module = session.loadModuleFromSource(
+            // Resolve #include directives
+            code.replaceAll(IMPORT_REGEX, (match, file) => {
+              try {
+                return fs.readFileSync(path.resolve(path.dirname(id), file), { encoding: 'utf8' })
+              } catch {
+                return match
+              }
+            }),
+            'shader',
+            id,
+          )
 
           // Surface compilation errors
           if (!module) {

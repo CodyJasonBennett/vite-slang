@@ -1,27 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, assert } from 'vitest'
 import { build } from 'vite'
 import viteSlang, { ViteSlangOptions } from '../src/index.js'
 
 async function transform(
-  shader: string,
+  input: string,
   options?: ViteSlangOptions,
 ): Promise<{ code: string; reflection: SlangReflectionJSON }> {
   const compiled = await build({
-    plugins: [
-      {
-        name: 'virtual',
-        enforce: 'pre',
-        resolveId(source) {
-          if (source === 'shader.slang') return 'shader.slang'
-          return null
-        },
-        load(id) {
-          if (id === 'shader.slang') return shader
-          return null
-        },
-      },
-      viteSlang(options),
-    ],
+    plugins: [viteSlang(options)],
     logLevel: 'silent',
     build: {
       target: 'esnext',
@@ -30,10 +16,7 @@ async function transform(
       modulePreload: false,
       rollupOptions: {
         treeshake: false,
-        input: 'shader.slang',
-        output: {
-          entryFileNames: '[name].js',
-        },
+        input: new URL(input, import.meta.url).href,
       },
     },
   })
@@ -42,61 +25,44 @@ async function transform(
   return new Function(`${compiled.output[0].code}\nreturn { reflection, code };`)()
 }
 
-const triangleShader = /* slang */ `
-  cbuffer Globals: register(b0, space0) {
-    float time;
-  };
-
-  [shader("vertex")]
-  float4 vmain(uint vertexIndex: SV_VertexID): SV_Position {
-    float2 uv = float2((vertexIndex << 1) & 2, vertexIndex & 2);
-    return float4(uv * 2.0 - 1.0, 0.0, 1.0);
+async function expectError(fn: () => Promise<any>): Promise<void> {
+  try {
+    assert(false, `Promise resolved "${await fn()}" instead of rejecting`)
+  } catch (error) {
+    expect((error as Error).message.replaceAll(/^file:.+$/gm, '')).toMatchSnapshot()
   }
-
-  [shader("fragment")]
-  float4 fmain(float4 position: SV_Position): SV_Target {
-    float2 coord = position.xy / position.w;
-    float3 color = float3(0.8, 0.7, 1.0) + 0.3 * cos(normalize(coord).xyx + time);
-    return float4(color, 1.0);
-  }
-`
-
-const emptyShader = /* slang */ `
-  void main() {
-    //
-  }
-`
-
-const brokenShader = /* slang */ `
-  [shader("compute")]
-  [numthreads(1, 1, 1)]
-  void main(uint2 dispatchThreadId: SV_DispatchThreadID) {
-    error;
-  }
-`
+}
 
 describe('viteSlang', () => {
   // Ensure ambient types work correctly for IntelliSense
-  import('./stub.slang') satisfies Promise<{
+  import('./shaders/stub.slang') satisfies Promise<{
     default: string
     code: string
     reflection: SlangReflectionJSON
   }>
 
   it('can compile to WGSL by default', async () => {
-    expect(await transform(triangleShader)).toMatchSnapshot()
+    expect(await transform('./shaders/triangle.slang')).toMatchSnapshot()
+  })
+
+  it('can resolve #include directives', async () => {
+    expect(await transform('./shaders/include-0.slang')).toMatchSnapshot()
+  })
+
+  it('throws on unresolved #include directive', async () => {
+    await expectError(() => transform('./shaders/include-error.slang'))
   })
 
   it('throws on unsupported target', async () => {
     // @ts-expect-error
-    await expect(transform(triangleShader, { target: 'unsupported' })).rejects.toThrowErrorMatchingSnapshot()
+    await expectError(() => transform('./shaders/triangle.slang', { target: 'unsupported' }))
   })
 
   it('throws if entrypoints are not defined', async () => {
-    await expect(transform(emptyShader)).rejects.toThrowErrorMatchingSnapshot()
+    await expectError(() => transform('./shaders/empty.slang'))
   })
 
   it('throws on shader compilation error', async () => {
-    await expect(transform(brokenShader)).rejects.toThrowErrorMatchingSnapshot()
+    await expectError(() => transform('./shaders/broken.slang'))
   })
 })
