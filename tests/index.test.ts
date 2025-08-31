@@ -1,5 +1,9 @@
 import { describe, it, expect, assert } from 'vitest'
-import { build } from 'vite'
+// @ts-ignore
+import { fileURLToPath } from 'node:url'
+// @ts-ignore
+import { dirname } from 'node:path'
+import { build, normalizePath } from 'vite'
 import viteSlang, { ViteSlangOptions } from '../src/index.js'
 
 async function transform(
@@ -25,11 +29,13 @@ async function transform(
   return new Function(`${compiled.output[0].code}\nreturn { reflection, code };`)()
 }
 
+const dir = normalizePath(dirname(fileURLToPath(import.meta.url)))
+
 async function expectError(fn: () => Promise<any>): Promise<void> {
   try {
     assert(false, `Promise resolved "${await fn()}" instead of rejecting`)
   } catch (error) {
-    expect((error as Error).message.replaceAll(/^file:.+$/gm, '')).toMatchSnapshot()
+    expect((error as Error).message.replaceAll(dir, '.')).toMatchSnapshot()
   }
 }
 

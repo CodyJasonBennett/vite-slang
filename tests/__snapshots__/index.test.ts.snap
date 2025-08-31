@@ -324,32 +324,32 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
 
 exports[`viteSlang > throws if entrypoints are not defined 1`] = `
 "[31m[vite-slang] An entrypoint must be defined with a shader stage attribute! Try adding [shader("fragment")] before your entrypoint method.[39m
-"
+file: [36m./shaders/empty.slang[39m"
 `;
 
 exports[`viteSlang > throws on shader compilation error 1`] = `
-"[31m[vite-slang] USER error: C:/Users/Cody Bennett/Documents/GitHub/vite-slang/tests/shaders/broken.slang(4): error 30015: undefined identifier 'error'.
+"[31m[vite-slang] USER error: ./shaders/broken.slang(4): error 30015: undefined identifier 'error'.
   error;
   ^~~~~
 (0): error 39999: import of module 'shader' failed because of a compilation error
 (0): fatal error 39999: compilation ceased
 abort compilation: (0): fatal error 39999: compilation ceased
 [39m
-"
+file: [36m./shaders/broken.slang[39m"
 `;
 
 exports[`viteSlang > throws on unresolved #include directive 1`] = `
-"[31m[vite-slang] USER error: C:/Users/Cody Bennett/Documents/GitHub/vite-slang/tests/shaders/include-error.slang(4): error 15300: failed to find include file 'include-2.slang'
+"[31m[vite-slang] USER error: ./shaders/include-error.slang(4): error 15300: failed to find include file 'include-2.slang'
 #include "include-2.slang"
          ^~~~~~~~~~~~~~~~~
 (0): error 39999: import of module 'shader' failed because of a compilation error
 (0): fatal error 39999: compilation ceased
 abort compilation: (0): fatal error 39999: compilation ceased
 [39m
-"
+file: [36m./shaders/include-error.slang[39m"
 `;
 
 exports[`viteSlang > throws on unsupported target 1`] = `
 "[31m[vite-slang] Unsupported Slang target: unsupported.[39m
-"
+file: [36m./shaders/triangle.slang[39m"
 `;
