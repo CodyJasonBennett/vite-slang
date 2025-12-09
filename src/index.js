@@ -89,9 +89,11 @@ function viteSlang(options) {
           /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
           const module = session.loadModuleFromSource(
             // Resolve #include directives
-            code.replaceAll(IMPORT_REGEX, (match, file) => {
+            code.replaceAll(IMPORT_REGEX, (match, specifier) => {
               try {
-                return fs.readFileSync(path.resolve(path.dirname(id), file), { encoding: 'utf8' })
+                const file = path.resolve(path.dirname(id), specifier)
+                this.addWatchFile(file)
+                return fs.readFileSync(file, { encoding: 'utf8' })
               } catch {
                 return match
               }
