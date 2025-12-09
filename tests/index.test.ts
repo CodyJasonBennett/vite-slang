@@ -1,7 +1,5 @@
 import { describe, it, expect, assert } from 'vitest'
-// @ts-ignore
 import { fileURLToPath } from 'node:url'
-// @ts-ignore
 import { dirname } from 'node:path'
 import { build, normalizePath } from 'vite'
 import viteSlang, { ViteSlangOptions } from '../src/index.js'
