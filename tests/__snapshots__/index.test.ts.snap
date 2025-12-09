@@ -161,6 +161,14 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
 }
 `;
 
+exports[`viteSlang > can handle link errors 1`] = `
+"[31m[vite-slang] USER error: ./shaders/link-error.slang(1): error 41009: non-void function must return in all cases for target 'wgsl'
+float typeError() {
+      ^~~~~~~~~
+[39m
+file: [36m./shaders/link-error.slang[39m"
+`;
+
 exports[`viteSlang > can resolve #include directives 1`] = `
 {
   "code": "struct SLANG_ParameterGroup_Globals_std140_0

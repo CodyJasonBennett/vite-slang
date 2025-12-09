@@ -71,4 +71,8 @@ describe('viteSlang', () => {
   it('throws on shader compilation error', async () => {
     await expectError(() => transform('./shaders/broken.slang'))
   })
+
+  it('can handle link errors', async () => {
+    await expectError(() => transform('./shaders/link-error.slang'))
+  })
 })

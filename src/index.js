@@ -134,6 +134,12 @@ function viteSlang(options) {
           const shader = linkedProgram.getTargetCode(0)
           const reflection = linkedProgram.getLayout(0).toJsonObject()
 
+          // Handle link errors
+          if (shader.length === 0) {
+            const error = slang.getLastError()
+            throw new Error(`${error.type} error: ${error.message}`)
+          }
+
           // Export with overloads for default export or named exports for reflection (see slang.d.ts)
           const reflectionJson = JSON.stringify(reflection)
           code = `export const code = \`${shader}\`;export const reflection = ${reflectionJson};export default code;`
