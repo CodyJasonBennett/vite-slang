@@ -26,6 +26,24 @@ export interface ViteSlangOptions {
    * Default is `/\.slang$/`.
    */
   filter?: StringFilter<string | RegExp>
+  /**
+   * Slang WASM version to download from GitHub releases (e.g., `'2026.3'`).
+   * Cached in `node_modules/.cache/vite-slang/`.
+   *
+   * Default is `'2026.3'`.
+   */
+  slangVersion?: string
+  /**
+   * Path to a pre-downloaded WASM directory containing `slang-wasm.js` and `slang-wasm.wasm`.
+   * ! Overrides `slangVersion`.
+   */
+  slangWasmDir?: string
+  /**
+   * Check GitHub for newer Slang versions and log a notice.
+   *
+   * Default is `true`.
+   */
+  checkForUpdates?: boolean
 }
 
 declare function viteSlang(options?: ViteSlangOptions): PluginOption
