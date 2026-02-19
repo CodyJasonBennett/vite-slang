@@ -9,7 +9,7 @@ async function transform(
   options?: ViteSlangOptions,
 ): Promise<{ code: string; reflection: SlangReflectionJSON }> {
   const compiled = await build({
-    plugins: [viteSlang(options)],
+    plugins: [viteSlang({ checkForUpdates: false, ...options })],
     logLevel: 'silent',
     build: {
       target: 'esnext',
