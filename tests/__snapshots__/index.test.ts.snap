@@ -1,5 +1,211 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`viteSlang > can compile a shared struct between stages 1`] = `
+{
+  "code": "@binding(0) @group(0) var blitTexture_0 : texture_2d<f32>;
+
+@binding(1) @group(0) var linearClampSampler_0 : sampler;
+
+struct FullscreenTriangle_0
+{
+    @builtin(position) position_0 : vec4<f32>,
+    @location(0) uv_0 : vec2<f32>,
+};
+
+fn FullscreenTriangle_x24init_0( position_1 : vec4<f32>,  uv_1 : vec2<f32>) -> FullscreenTriangle_0
+{
+    var _S1 : FullscreenTriangle_0;
+    _S1.position_0 = position_1;
+    _S1.uv_0 = uv_1;
+    return _S1;
+}
+
+@vertex
+fn vertexMain(@builtin(vertex_index) vertexIndex_0 : u32) -> FullscreenTriangle_0
+{
+    var _S2 : vec2<f32> = vec2<f32>(2.0f);
+    var uv_2 : vec2<f32> = vec2<f32>(f32((vertexIndex_0 >> (u32(1)))), f32((vertexIndex_0 & (u32(1))))) * _S2;
+    return FullscreenTriangle_x24init_0(vec4<f32>(uv_2 * _S2 - vec2<f32>(1.0f), 0.0f, 1.0f), uv_2);
+}
+
+struct pixelOutput_0
+{
+    @location(0) output_0 : vec4<f32>,
+};
+
+struct pixelInput_0
+{
+    @location(0) uv_3 : vec2<f32>,
+};
+
+@fragment
+fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) -> pixelOutput_0
+{
+    var _S4 : pixelOutput_0 = pixelOutput_0( (textureSample((blitTexture_0), (linearClampSampler_0), (_S3.uv_3))) );
+    return _S4;
+}
+
+",
+  "reflection": {
+    "bindlessSpaceIndex": 1,
+    "entryPoints": [
+      {
+        "name": "vertexMain",
+        "parameters": [
+          {
+            "name": "vertexIndex",
+            "semanticName": "SV_VERTEXID",
+            "type": {
+              "kind": "scalar",
+              "scalarType": "uint32",
+            },
+          },
+        ],
+        "result": {
+          "binding": {
+            "index": 0,
+            "kind": "varyingOutput",
+          },
+          "stage": "vertex",
+          "type": {
+            "fields": [
+              {
+                "name": "position",
+                "semanticName": "SV_POSITION",
+                "type": {
+                  "elementCount": 4,
+                  "elementType": {
+                    "kind": "scalar",
+                    "scalarType": "float32",
+                  },
+                  "kind": "vector",
+                },
+              },
+              {
+                "binding": {
+                  "index": 0,
+                  "kind": "varyingOutput",
+                },
+                "name": "uv",
+                "semanticName": "TEXCOORD",
+                "stage": "vertex",
+                "type": {
+                  "elementCount": 2,
+                  "elementType": {
+                    "kind": "scalar",
+                    "scalarType": "float32",
+                  },
+                  "kind": "vector",
+                },
+              },
+            ],
+            "kind": "struct",
+            "name": "FullscreenTriangle",
+          },
+        },
+        "stage": "vertex",
+      },
+      {
+        "name": "fragmentMain",
+        "parameters": [
+          {
+            "binding": {
+              "index": 0,
+              "kind": "varyingInput",
+            },
+            "name": "input",
+            "stage": "fragment",
+            "type": {
+              "fields": [
+                {
+                  "name": "position",
+                  "semanticName": "SV_POSITION",
+                  "type": {
+                    "elementCount": 4,
+                    "elementType": {
+                      "kind": "scalar",
+                      "scalarType": "float32",
+                    },
+                    "kind": "vector",
+                  },
+                },
+                {
+                  "binding": {
+                    "index": 0,
+                    "kind": "varyingInput",
+                  },
+                  "name": "uv",
+                  "semanticName": "TEXCOORD",
+                  "stage": "fragment",
+                  "type": {
+                    "elementCount": 2,
+                    "elementType": {
+                      "kind": "scalar",
+                      "scalarType": "float32",
+                    },
+                    "kind": "vector",
+                  },
+                },
+              ],
+              "kind": "struct",
+              "name": "FullscreenTriangle",
+            },
+          },
+        ],
+        "result": {
+          "binding": {
+            "index": 0,
+            "kind": "varyingOutput",
+          },
+          "semanticName": "SV_TARGET",
+          "stage": "fragment",
+          "type": {
+            "elementCount": 4,
+            "elementType": {
+              "kind": "scalar",
+              "scalarType": "float32",
+            },
+            "kind": "vector",
+          },
+        },
+        "stage": "fragment",
+      },
+    ],
+    "parameters": [
+      {
+        "binding": {
+          "index": 0,
+          "kind": "descriptorTableSlot",
+        },
+        "name": "blitTexture",
+        "type": {
+          "baseShape": "texture2D",
+          "kind": "resource",
+          "resultType": {
+            "elementCount": 4,
+            "elementType": {
+              "kind": "scalar",
+              "scalarType": "float32",
+            },
+            "kind": "vector",
+          },
+        },
+      },
+      {
+        "binding": {
+          "index": 1,
+          "kind": "descriptorTableSlot",
+        },
+        "name": "linearClampSampler",
+        "type": {
+          "kind": "samplerState",
+        },
+      },
+    ],
+  },
+}
+`;
+
 exports[`viteSlang > can compile to WGSL by default 1`] = `
 {
   "code": "struct SLANG_ParameterGroup_Globals_std140_0
