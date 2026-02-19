@@ -12,7 +12,6 @@ declare namespace RuntimeExports {
         export let ignorePermissions: boolean;
         export let filesystems: any;
         export let syncFSRequests: number;
-        export let readFiles: {};
         export { ErrnoError };
         export { FSStream };
         export { FSNode };
@@ -358,7 +357,7 @@ export interface EntryPoint extends ComponentType {
   getName(): string;
 }
 
-export interface StringList extends ClassHandle {
+export interface StringList extends ClassHandle, Iterable<string> {
   push_back(_0: EmbindString): void;
   resize(_0: number, _1: EmbindString): void;
   size(): number;
@@ -381,7 +380,7 @@ export type Location = {
   range: Range
 };
 
-export interface LocationList extends ClassHandle {
+export interface LocationList extends ClassHandle, Iterable<Location> {
   push_back(_0: Location): void;
   resize(_0: number, _1: Location): void;
   size(): number;
@@ -394,7 +393,7 @@ export type TextEdit = {
   text: EmbindString
 };
 
-export interface TextEditList extends ClassHandle {
+export interface TextEditList extends ClassHandle, Iterable<TextEdit> {
   push_back(_0: TextEdit): void;
   resize(_0: number, _1: TextEdit): void;
   size(): number;
@@ -416,13 +415,13 @@ export type CompletionItem = {
   label: EmbindString,
   kind: number,
   detail: EmbindString,
-  documentation: MarkupContent | undefined,
-  textEdit: TextEdit | undefined,
+  documentation?: MarkupContent | undefined,
+  textEdit?: TextEdit | undefined,
   data: EmbindString,
-  commitCharacters: StringList | undefined
+  commitCharacters?: StringList | undefined
 };
 
-export interface CompletionItemList extends ClassHandle {
+export interface CompletionItemList extends ClassHandle, Iterable<CompletionItem> {
   push_back(_0: CompletionItem): void;
   resize(_0: number, _1: CompletionItem): void;
   size(): number;
@@ -442,7 +441,7 @@ export type ParameterInformation = {
   documentation: MarkupContent
 };
 
-export interface ParameterInformationList extends ClassHandle {
+export interface ParameterInformationList extends ClassHandle, Iterable<ParameterInformation> {
   push_back(_0: ParameterInformation): void;
   resize(_0: number, _1: ParameterInformation): void;
   size(): number;
@@ -456,7 +455,7 @@ export type SignatureInformation = {
   parameters: ParameterInformationList
 };
 
-export interface SignatureInformationList extends ClassHandle {
+export interface SignatureInformationList extends ClassHandle, Iterable<SignatureInformation> {
   push_back(_0: SignatureInformation): void;
   resize(_0: number, _1: SignatureInformation): void;
   size(): number;
@@ -470,7 +469,7 @@ export type SignatureHelp = {
   activeParameter: number
 };
 
-export interface DocumentSymbolList extends ClassHandle {
+export interface DocumentSymbolList extends ClassHandle, Iterable<DocumentSymbol> {
   push_back(_0: DocumentSymbol): void;
   resize(_0: number, _1: DocumentSymbol): void;
   size(): number;
@@ -494,7 +493,7 @@ export type Diagnostics = {
   message: EmbindString
 };
 
-export interface DiagnosticsList extends ClassHandle {
+export interface DiagnosticsList extends ClassHandle, Iterable<Diagnostics> {
   push_back(_0: Diagnostics): void;
   resize(_0: number, _1: Diagnostics): void;
   size(): number;
@@ -502,7 +501,7 @@ export interface DiagnosticsList extends ClassHandle {
   set(_0: number, _1: Diagnostics): boolean;
 }
 
-export interface Uint32List extends ClassHandle {
+export interface Uint32List extends ClassHandle, Iterable<number> {
   push_back(_0: number): void;
   resize(_0: number, _1: number): void;
   size(): number;
@@ -526,6 +525,7 @@ export interface LanguageServer extends ClassHandle {
 
 interface EmbindModule {
   SLANG_OK: number;
+  getVersionString(): string;
   getCompileTargets(): any;
   GlobalSession: {};
   createGlobalSession(): GlobalSession | null;

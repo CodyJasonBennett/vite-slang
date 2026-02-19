@@ -73,4 +73,8 @@ describe('viteSlang', () => {
   it('can handle link errors', async () => {
     await expectError(() => transform('./shaders/link-error.slang'))
   })
+
+  it('can compile a shared struct between stages', async () => {
+    expect(await transform('./shaders/struct-location-bug.slang')).toMatchSnapshot()
+  })
 })

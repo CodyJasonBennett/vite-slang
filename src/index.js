@@ -1,7 +1,7 @@
 import { transformWithEsbuild } from 'vite'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import slangModule from './slang-2025.23.2-wasm/slang-wasm.js'
+import slangModule from './slang-2026.2.2-wasm/slang-wasm.js'
 
 /**
  * Tests a Vite filter against a file id.
