@@ -86,18 +86,29 @@ function viteSlang(options) {
             throw new Error(`Unable to create Slang session for ${options.target} target. Please file an issue.`)
           }
 
-          /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
-          const module = session.loadModuleFromSource(
-            // Resolve #include directives
-            code.replaceAll(IMPORT_REGEX, (match, specifier) => {
+          // Recursively resolve #include directives
+          // Files with include guards (#ifndef) are only included once.
+          // Files without guards (template-pattern headers) can be re-included.
+          const resolved = new Set()
+          const resolveIncludes = (source, baseDir) => {
+            return source.replaceAll(IMPORT_REGEX, (match, specifier) => {
               try {
-                const file = path.resolve(path.dirname(id), specifier)
+                const file = path.resolve(baseDir, specifier)
                 this.addWatchFile(file)
-                return fs.readFileSync(file, { encoding: 'utf8' })
+                const content = fs.readFileSync(file, { encoding: 'utf8' })
+                const hasGuard = /^\s*#ifndef\s+(\w+)\s*\n\s*#define\s+\1\b/m.test(content)
+                if (hasGuard && resolved.has(file)) return `// [already included: ${specifier}]`
+                if (hasGuard) resolved.add(file)
+                return resolveIncludes(content, path.dirname(file))
               } catch {
                 return match
               }
-            }),
+            })
+          }
+
+          /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
+          const module = session.loadModuleFromSource(
+            resolveIncludes(code, path.dirname(id)),
             'shader',
             id,
           )
