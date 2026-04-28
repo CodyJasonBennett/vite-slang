@@ -77,4 +77,20 @@ describe('viteSlang', () => {
   it('can compile a shared struct between stages', async () => {
     expect(await transform('./shaders/struct-location-bug.slang')).toMatchSnapshot()
   })
+
+  it('identifies valid include guards', async () => {
+    expect(await transform('./shaders/valid-guard.slang')).toMatchSnapshot()
+  })
+
+  it('ignores commented-out include guards', async () => {
+    expect(await transform('./shaders/commented-guard.slang')).toMatchSnapshot()
+  })
+
+  it('ignores defines mid-file from include scan', async () => {
+    expect(await transform('./shaders/false-positive-guard.slang')).toMatchSnapshot()
+  })
+
+  it('prevents infinite recursion via include guards', async () => {
+    await expectError(() => transform('./shaders/circular-a.slang'))
+  })
 })

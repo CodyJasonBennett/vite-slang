@@ -32,7 +32,48 @@ const SLANG_STAGES = {
   compute: 6,
 }
 
-const IMPORT_REGEX = /^\s*#include\s+"([^"]+)"/gm
+const INCLUDE_REGEX = /^\s*#include\s+"([^"]+)"/gm
+const INCLUDE_GUARD_REGEX = /^\s*(?:\/\*[\s\S]*?\*\/|\/\/.*|\s)*#ifndef\s+(\w+)\s*\r?\n\s*#define\s+\1\b/
+
+/**
+ * Recursively resolved #include directives.
+ *
+ * @param {import('rollup').TransformPluginContext} context
+ * @param {string} source
+ * @param {string} baseDir
+ * @param {Set<string>} resolved
+ * @param {Set<string>} stack
+ * @returns string
+ */
+function resolveIncludes(context, source, baseDir, resolved, stack = new Set()) {
+  return source.replaceAll(INCLUDE_REGEX, (match, specifier) => {
+    try {
+      const file = path.resolve(baseDir, specifier)
+
+      // Break on circular dependency
+      if (stack.has(file)) {
+        throw new Error(`Circular dependency detected: ${Array.from(stack).join(' -> ')} -> ${file}`)
+      }
+
+      const content = fs.readFileSync(file, { encoding: 'utf8' })
+      context.addWatchFile(file)
+
+      if (INCLUDE_GUARD_REGEX.test(content)) {
+        if (resolved.has(file)) return `// [already included: ${specifier}]`
+        resolved.add(file)
+      }
+
+      const newStack = new Set(stack)
+      newStack.add(file)
+
+      return resolveIncludes(context, content, path.dirname(file), resolved, newStack)
+    } catch (e) {
+      // Re-throw circular errors, otherwise return the original match for Slang to handle
+      if (e.message.includes('Circular dependency')) throw e
+      return match
+    }
+  })
+}
 
 /** @type {Promise<import('./slang-2025.15-wasm/slang-wasm.js').MainModule> | null} */
 let slangPromise = null
@@ -89,29 +130,10 @@ function viteSlang(options) {
           // Recursively resolve #include directives
           // Files with include guards (#ifndef) are only included once.
           // Files without guards (template-pattern headers) can be re-included.
-          const resolved = new Set()
-          const resolveIncludes = (source, baseDir) => {
-            return source.replaceAll(IMPORT_REGEX, (match, specifier) => {
-              try {
-                const file = path.resolve(baseDir, specifier)
-                this.addWatchFile(file)
-                const content = fs.readFileSync(file, { encoding: 'utf8' })
-                const hasGuard = /^\s*#ifndef\s+(\w+)\s*\n\s*#define\s+\1\b/m.test(content)
-                if (hasGuard && resolved.has(file)) return `// [already included: ${specifier}]`
-                if (hasGuard) resolved.add(file)
-                return resolveIncludes(content, path.dirname(file))
-              } catch {
-                return match
-              }
-            })
-          }
+          const source = resolveIncludes(this, code, path.dirname(id), new Set(), new Set([path.resolve(id)]))
 
           /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
-          const module = session.loadModuleFromSource(
-            resolveIncludes(code, path.dirname(id)),
-            'shader',
-            id,
-          )
+          const module = session.loadModuleFromSource(source, 'shader', id)
 
           // Surface compilation errors
           if (!module) {
