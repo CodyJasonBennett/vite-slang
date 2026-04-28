@@ -670,7 +670,7 @@ fn main(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
 `;
 
 exports[`viteSlang > prevents infinite recursion via include guards 1`] = `
-"[31m[vite-slang] Circular dependency detected: C:\\Users\\Cody Bennett\\Documents\\GitHub\\vite-slang\\tests\\shaders\\circular-a.slang -> C:\\Users\\Cody Bennett\\Documents\\GitHub\\vite-slang\\tests\\shaders\\circular-b.slang -> C:\\Users\\Cody Bennett\\Documents\\GitHub\\vite-slang\\tests\\shaders\\circular-a.slang[39m
+"[31m[vite-slang] Circular dependency detected: ./circular-a.slang -> ./circular-b.slang -> C:\\Users\\Cody Bennett\\Documents\\GitHub\\vite-slang\\tests\\shaders\\circular-a.slang[39m
 file: [36m./shaders/circular-a.slang[39m"
 `;
 

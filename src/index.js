@@ -52,7 +52,11 @@ function resolveIncludes(context, source, baseDir, resolved, stack = new Set()) 
 
       // Break on circular dependency
       if (stack.has(file)) {
-        throw new Error(`Circular dependency detected: ${Array.from(stack).join(' -> ')} -> ${file}`)
+        throw new Error(
+          `Circular dependency detected: ${Array.from(stack)
+            .map((f) => f.replace(baseDir, '').replaceAll(path.sep, '/').replace(/^\//, './'))
+            .join(' -> ')} -> ${file}`,
+        )
       }
 
       const content = fs.readFileSync(file, { encoding: 'utf8' })
