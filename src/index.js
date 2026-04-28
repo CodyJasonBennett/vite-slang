@@ -54,8 +54,13 @@ function resolveIncludes(context, source, baseDir, resolved, stack = new Set()) 
       if (stack.has(file)) {
         throw new Error(
           `Circular dependency detected: ${Array.from(stack)
-            .map((f) => f.replace(baseDir, '').replaceAll(path.sep, '/').replace(/^\//, './'))
-            .join(' -> ')} -> ${file}`,
+            .map((f) =>
+              f
+                .replace(baseDir, '')
+                .replaceAll(path.sep, '/')
+                .replace(/^\.?\//, ''),
+            )
+            .join(' -> ')} -> ${specifier}`,
         )
       }
 
