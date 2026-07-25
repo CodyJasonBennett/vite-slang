@@ -1,30 +1,31 @@
 import { describe, it, expect, assert } from 'vitest'
 import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
-import { build, normalizePath } from 'vite'
+import { createServer, normalizePath } from 'vite'
 import viteSlang, { ViteSlangOptions } from '../src/index.js'
 
 async function transform(
   input: string,
   options?: ViteSlangOptions,
 ): Promise<{ code: string; reflection: SlangReflectionJSON }> {
-  const compiled = await build({
+  const fileUrl = new URL(input, import.meta.url).href
+
+  const server = await createServer({
     plugins: [viteSlang(options)],
     logLevel: 'silent',
-    build: {
-      target: 'esnext',
-      write: false,
-      minify: false,
-      modulePreload: false,
-      rollupOptions: {
-        treeshake: false,
-        input: new URL(input, import.meta.url).href,
-      },
-    },
+    server: { middlewareMode: true },
   })
 
-  // @ts-ignore
-  return new Function(`${compiled.output[0].code}\nreturn { reflection, code };`)()
+  try {
+    const compiled = (await server.transformRequest(fileUrl))!
+
+    const dataUrl = `data:text/javascript;base64,${Buffer.from(compiled.code).toString('base64')}`
+    const { code, reflection } = await import(dataUrl)
+
+    return { code, reflection }
+  } finally {
+    await server.close()
+  }
 }
 
 const dir = normalizePath(dirname(fileURLToPath(import.meta.url)))

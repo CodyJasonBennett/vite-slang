@@ -369,14 +369,13 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
 `;
 
 exports[`viteSlang > can handle link errors 1`] = `
-"[31m[vite-slang] USER error: error[E41009]: non-void function must return
+"USER error: error[E41009]: non-void function must return
  --> ./shaders/link-error.slang:1:7
   |
 1 | float typeError() {
   |       ^^^^^^^^^ non-void function must return in all cases for target 'wgsl'
 --'
-[39m
-file: [36m./shaders/link-error.slang[39m"
+"
 `;
 
 exports[`viteSlang > can resolve #include directives 1`] = `
@@ -669,18 +668,12 @@ fn main(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
 }
 `;
 
-exports[`viteSlang > prevents infinite recursion via include guards 1`] = `
-"[31m[vite-slang] Circular dependency detected: circular-a.slang -> circular-b.slang -> circular-a.slang[39m
-file: [36m./shaders/circular-a.slang[39m"
-`;
+exports[`viteSlang > prevents infinite recursion via include guards 1`] = `"Circular dependency detected: circular-a.slang -> circular-b.slang -> circular-a.slang"`;
 
-exports[`viteSlang > throws if entrypoints are not defined 1`] = `
-"[31m[vite-slang] An entrypoint must be defined with a shader stage attribute! Try adding [shader("fragment")] before your entrypoint method.[39m
-file: [36m./shaders/empty.slang[39m"
-`;
+exports[`viteSlang > throws if entrypoints are not defined 1`] = `"An entrypoint must be defined with a shader stage attribute! Try adding [shader("fragment")] before your entrypoint method."`;
 
 exports[`viteSlang > throws on shader compilation error 1`] = `
-"[31m[vite-slang] USER error: error[E30015]: undefined identifier
+"USER error: error[E30015]: undefined identifier
  --> ./shaders/broken.slang:4:3
   |
 4 | error;
@@ -689,12 +682,11 @@ exports[`viteSlang > throws on shader compilation error 1`] = `
 error[E39999]: import failed due to compilation error
 fatal error[E40003]: compilation ceased
 abort compilation: fatal error[E40003]: compilation ceased
-[39m
-file: [36m./shaders/broken.slang[39m"
+"
 `;
 
 exports[`viteSlang > throws on unresolved #include directive 1`] = `
-"[31m[vite-slang] USER error: error[E15300]: include file not found
+"USER error: error[E15300]: include file not found
  --> ./shaders/include-error.slang:4:10
   |
 4 | #include "include-2.slang"
@@ -703,11 +695,7 @@ exports[`viteSlang > throws on unresolved #include directive 1`] = `
 error[E39999]: import failed due to compilation error
 fatal error[E40003]: compilation ceased
 abort compilation: fatal error[E40003]: compilation ceased
-[39m
-file: [36m./shaders/include-error.slang[39m"
+"
 `;
 
-exports[`viteSlang > throws on unsupported target 1`] = `
-"[31m[vite-slang] Unsupported Slang target: unsupported.[39m
-file: [36m./shaders/triangle.slang[39m"
-`;
+exports[`viteSlang > throws on unsupported target 1`] = `"Unsupported Slang target: unsupported."`;

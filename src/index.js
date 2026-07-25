@@ -1,4 +1,3 @@
-import { transformWithEsbuild } from 'vite'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import slangModule from './slang-2026.7.1-wasm/slang-wasm.js'
@@ -188,11 +187,7 @@ function viteSlang(options) {
           const reflectionJson = JSON.stringify(reflection)
           code = `export const code = \`${shader}\`;export const reflection = ${reflectionJson};export default code;`
 
-          return transformWithEsbuild(code, id, {
-            format: 'esm',
-            loader: 'js',
-            sourcemap: 'external', // TODO: pass to WebGPU API?
-          })
+          return { code }
         } finally {
           if (session) session.delete()
         }
