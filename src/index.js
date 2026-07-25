@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import slangModule from './slang-2026.7.1-wasm/slang-wasm.js'
+import slangModule from './slang-2026.14-wasm/slang-wasm.js'
 
 /**
  * Tests a Vite filter against a file id.
