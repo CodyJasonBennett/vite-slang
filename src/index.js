@@ -37,7 +37,7 @@ const INCLUDE_GUARD_REGEX = /^\s*(?:\/\*[\s\S]*?\*\/|\/\/.*|\s)*#ifndef\s+(\w+)\
 /**
  * Recursively resolved #include directives.
  *
- * @param {import('rollup').TransformPluginContext} context
+ * @param {import('rolldown').TransformPluginContext} context
  * @param {string} source
  * @param {string} baseDir
  * @param {Set<string>} resolved
@@ -46,40 +46,39 @@ const INCLUDE_GUARD_REGEX = /^\s*(?:\/\*[\s\S]*?\*\/|\/\/.*|\s)*#ifndef\s+(\w+)\
  */
 function resolveIncludes(context, source, baseDir, resolved, stack = new Set()) {
   return source.replaceAll(INCLUDE_REGEX, (match, specifier) => {
-    try {
-      const file = path.resolve(baseDir, specifier)
+    const file = path.resolve(baseDir, specifier)
 
-      // Break on circular dependency
-      if (stack.has(file)) {
-        throw new Error(
-          `Circular dependency detected: ${Array.from(stack)
-            .map((f) =>
-              f
-                .replace(baseDir, '')
-                .replaceAll(path.sep, '/')
-                .replace(/^\.?\//, ''),
-            )
-            .join(' -> ')} -> ${specifier}`,
-        )
+    // Fallback to Slang handler on no file
+    if (!fs.existsSync(file)) return match
+
+    // Break on circular dependency
+    if (stack.has(file)) {
+      let chain = ''
+      for (const filePath of stack) {
+        const relativePath = path.relative(baseDir, filePath).replaceAll(path.sep, '/')
+        chain += relativePath + ' -> '
       }
+      chain += specifier
 
-      const content = fs.readFileSync(file, { encoding: 'utf8' })
-      context.addWatchFile(file)
-
-      if (INCLUDE_GUARD_REGEX.test(content)) {
-        if (resolved.has(file)) return `// [already included: ${specifier}]`
-        resolved.add(file)
-      }
-
-      const newStack = new Set(stack)
-      newStack.add(file)
-
-      return resolveIncludes(context, content, path.dirname(file), resolved, newStack)
-    } catch (e) {
-      // Re-throw circular errors, otherwise return the original match for Slang to handle
-      if (e.message.includes('Circular dependency')) throw e
-      return match
+      return context.error({
+        message: `Circular dependency detected: ${chain}`,
+        id: file,
+        plugin: 'vite-slang',
+      })
     }
+
+    const content = fs.readFileSync(file, { encoding: 'utf8' })
+    context.addWatchFile(file) // HMR
+
+    if (INCLUDE_GUARD_REGEX.test(content)) {
+      if (resolved.has(file)) return `// [already included: ${specifier}]`
+      resolved.add(file)
+    }
+
+    const newStack = new Set(stack)
+    newStack.add(file)
+
+    return resolveIncludes(context, content, path.dirname(file), resolved, newStack)
   })
 }
 
