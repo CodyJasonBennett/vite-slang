@@ -83,10 +83,10 @@ function resolveIncludes(context, source, baseDir, resolved, stack = new Set()) 
   })
 }
 
-/** @type {Promise<import('./slang-2025.15-wasm/slang-wasm.js').MainModule> | null} */
+/** @type {Promise<import('./slang-2026.14-wasm/slang-wasm.js').MainModule> | null} */
 let slangPromise = null
 
-/** @type {import('./slang-2025.15-wasm/slang-wasm.js').GlobalSession | null} */
+/** @type {import('./slang-2026.14-wasm/slang-wasm.js').GlobalSession | null} */
 let globalSession = null
 
 /**
@@ -110,7 +110,7 @@ function viteSlang(options) {
         // https://github.com/CodyJasonBennett/vite-slang/issues/1
         if (!testFilter(id, options.filter)) return
 
-        /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Session | null} */
+        /** @type {import('./slang-2026.14-wasm/slang-wasm.js').Session | null} */
         let session = null
 
         try {
@@ -140,7 +140,7 @@ function viteSlang(options) {
           // Files without guards (template-pattern headers) can be re-included.
           const source = resolveIncludes(this, code, path.dirname(id), new Set(), new Set([path.resolve(id)]))
 
-          /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module | null} */
+          /** @type {import('./slang-2026.14-wasm/slang-wasm.js').Module | null} */
           const module = session.loadModuleFromSource(source, 'shader', id)
 
           // Surface compilation errors
@@ -159,12 +159,12 @@ function viteSlang(options) {
 
           // Link shader entrypoints
           // TODO: surely, there's a better way to reflect the program and get a top-level layout?
-          /** @type {import('./slang-2025.15-wasm/slang-wasm.js').Module[]} */
+          /** @type {import('./slang-2026.14-wasm/slang-wasm.js').Module[]} */
           const components = [module]
           for (let i = 0; i < count; i++) {
-            /** @type {import('./slang-2025.15-wasm/slang-wasm.js').EntryPoint} */
+            /** @type {import('./slang-2026.14-wasm/slang-wasm.js').EntryPoint} */
             const entryPoint = module.getDefinedEntryPoint(i)
-            /** @type {import('./slang-2025.15-wasm/slang-wasm.js').ComponentType} */
+            /** @type {import('./slang-2026.14-wasm/slang-wasm.js').ComponentType} */
             const program = session.createCompositeComponentType([entryPoint, 1])
             const layout = program.getLayout(0).toJsonObject()
             const { name, stage } = layout.entryPoints[0]
@@ -172,7 +172,7 @@ function viteSlang(options) {
           }
 
           // Compile shader with reflection
-          /** @type {import('./slang-2025.15-wasm/slang-wasm.js').ComponentType} */
+          /** @type {import('./slang-2026.14-wasm/slang-wasm.js').ComponentType} */
           const linkedProgram = session.createCompositeComponentType(components).link()
           const shader = linkedProgram.getTargetCode(0)
           const reflection = linkedProgram.getLayout(0).toJsonObject()
