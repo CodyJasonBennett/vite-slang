@@ -58,6 +58,7 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
             "type": {
               "kind": "scalar",
               "scalarType": "uint32",
+              "sizes": [],
             },
           },
         ],
@@ -79,6 +80,7 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
                     "scalarType": "float32",
                   },
                   "kind": "vector",
+                  "sizes": [],
                 },
               },
               {
@@ -96,12 +98,38 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
                     "scalarType": "float32",
                   },
                   "kind": "vector",
+                  "sizes": [
+                    {
+                      "kind": "varyingOutput",
+                      "value": 1,
+                    },
+                  ],
                 },
               },
             ],
             "kind": "struct",
             "name": "FullscreenTriangle",
+            "sizes": [
+              {
+                "kind": "varyingOutput",
+                "value": 1,
+              },
+            ],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "vertexIndex",
+              "semanticName": "SV_VERTEXID",
+              "type": {
+                "kind": "scalar",
+                "scalarType": "uint32",
+                "sizes": [],
+              },
+            },
+          ],
         },
         "stage": "vertex",
       },
@@ -127,6 +155,7 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
                       "scalarType": "float32",
                     },
                     "kind": "vector",
+                    "sizes": [],
                   },
                 },
                 {
@@ -144,11 +173,23 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
                       "scalarType": "float32",
                     },
                     "kind": "vector",
+                    "sizes": [
+                      {
+                        "kind": "varyingInput",
+                        "value": 1,
+                      },
+                    ],
                   },
                 },
               ],
               "kind": "struct",
               "name": "FullscreenTriangle",
+              "sizes": [
+                {
+                  "kind": "varyingInput",
+                  "value": 1,
+                },
+              ],
             },
           },
         ],
@@ -166,11 +207,124 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
               "scalarType": "float32",
             },
             "kind": "vector",
+            "sizes": [
+              {
+                "kind": "varyingOutput",
+                "value": 1,
+              },
+            ],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "binding": {
+                "index": 0,
+                "kind": "varyingInput",
+              },
+              "name": "input",
+              "stage": "fragment",
+              "type": {
+                "fields": [
+                  {
+                    "name": "position",
+                    "semanticName": "SV_POSITION",
+                    "type": {
+                      "elementCount": 4,
+                      "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32",
+                      },
+                      "kind": "vector",
+                      "sizes": [],
+                    },
+                  },
+                  {
+                    "binding": {
+                      "index": 0,
+                      "kind": "varyingInput",
+                    },
+                    "name": "uv",
+                    "semanticName": "TEXCOORD",
+                    "stage": "fragment",
+                    "type": {
+                      "elementCount": 2,
+                      "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32",
+                      },
+                      "kind": "vector",
+                      "sizes": [
+                        {
+                          "kind": "varyingInput",
+                          "value": 1,
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "kind": "struct",
+                "name": "FullscreenTriangle",
+                "sizes": [
+                  {
+                    "kind": "varyingInput",
+                    "value": 1,
+                  },
+                ],
+              },
+            },
+          ],
         },
         "stage": "fragment",
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [
+        {
+          "binding": {
+            "index": 0,
+            "kind": "descriptorTableSlot",
+          },
+          "name": "blitTexture",
+          "type": {
+            "baseShape": "texture2D",
+            "kind": "resource",
+            "resultType": {
+              "elementCount": 4,
+              "elementType": {
+                "kind": "scalar",
+                "scalarType": "float32",
+              },
+              "kind": "vector",
+            },
+            "sizes": [
+              {
+                "kind": "descriptorTableSlot",
+                "value": 1,
+              },
+            ],
+          },
+        },
+        {
+          "binding": {
+            "index": 1,
+            "kind": "descriptorTableSlot",
+          },
+          "name": "linearClampSampler",
+          "type": {
+            "kind": "samplerState",
+            "sizes": [
+              {
+                "kind": "descriptorTableSlot",
+                "value": 1,
+              },
+            ],
+          },
+        },
+      ],
+    },
     "parameters": [
       {
         "binding": {
@@ -189,6 +343,12 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
             },
             "kind": "vector",
           },
+          "sizes": [
+            {
+              "kind": "descriptorTableSlot",
+              "value": 1,
+            },
+          ],
         },
       },
       {
@@ -199,9 +359,16 @@ fn fragmentMain( _S3 : pixelInput_0, @builtin(position) position_2 : vec4<f32>) 
         "name": "linearClampSampler",
         "type": {
           "kind": "samplerState",
+          "sizes": [
+            {
+              "kind": "descriptorTableSlot",
+              "value": 1,
+            },
+          ],
         },
       },
     ],
+    "version": "1.1",
   },
 }
 `;
@@ -251,6 +418,7 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
             "type": {
               "kind": "scalar",
               "scalarType": "uint32",
+              "sizes": [],
             },
           },
         ],
@@ -263,7 +431,22 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
               "scalarType": "float32",
             },
             "kind": "vector",
+            "sizes": [],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "vertexIndex",
+              "semanticName": "SV_VERTEXID",
+              "type": {
+                "kind": "scalar",
+                "scalarType": "uint32",
+                "sizes": [],
+              },
+            },
+          ],
         },
         "stage": "vertex",
       },
@@ -280,6 +463,7 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                 "scalarType": "float32",
               },
               "kind": "vector",
+              "sizes": [],
             },
           },
         ],
@@ -297,11 +481,134 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
               "scalarType": "float32",
             },
             "kind": "vector",
+            "sizes": [
+              {
+                "kind": "varyingOutput",
+                "value": 1,
+              },
+            ],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "position",
+              "semanticName": "SV_POSITION",
+              "type": {
+                "elementCount": 4,
+                "elementType": {
+                  "kind": "scalar",
+                  "scalarType": "float32",
+                },
+                "kind": "vector",
+                "sizes": [],
+              },
+            },
+          ],
         },
         "stage": "fragment",
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [
+        {
+          "binding": {
+            "index": 0,
+            "kind": "descriptorTableSlot",
+          },
+          "name": "Globals",
+          "type": {
+            "containerVarLayout": {
+              "binding": {
+                "index": 0,
+                "kind": "descriptorTableSlot",
+              },
+            },
+            "elementType": {
+              "fields": [
+                {
+                  "binding": {
+                    "elementStride": 0,
+                    "kind": "uniform",
+                    "offset": 0,
+                    "size": 4,
+                  },
+                  "name": "time",
+                  "type": {
+                    "kind": "scalar",
+                    "scalarType": "float32",
+                    "sizes": [
+                      {
+                        "alignment": 4,
+                        "kind": "uniform",
+                        "value": 4,
+                      },
+                    ],
+                  },
+                },
+              ],
+              "kind": "struct",
+              "sizes": [
+                {
+                  "alignment": 16,
+                  "kind": "uniform",
+                  "value": 16,
+                },
+              ],
+            },
+            "elementVarLayout": {
+              "binding": {
+                "elementStride": 0,
+                "kind": "uniform",
+                "offset": 0,
+                "size": 16,
+              },
+              "type": {
+                "fields": [
+                  {
+                    "binding": {
+                      "elementStride": 0,
+                      "kind": "uniform",
+                      "offset": 0,
+                      "size": 4,
+                    },
+                    "name": "time",
+                    "type": {
+                      "kind": "scalar",
+                      "scalarType": "float32",
+                      "sizes": [
+                        {
+                          "alignment": 4,
+                          "kind": "uniform",
+                          "value": 4,
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "kind": "struct",
+                "sizes": [
+                  {
+                    "alignment": 16,
+                    "kind": "uniform",
+                    "value": 16,
+                  },
+                ],
+              },
+            },
+            "kind": "constantBuffer",
+            "sizes": [
+              {
+                "kind": "descriptorTableSlot",
+                "value": 1,
+              },
+            ],
+          },
+        },
+      ],
+    },
     "parameters": [
       {
         "binding": {
@@ -329,10 +636,24 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                 "type": {
                   "kind": "scalar",
                   "scalarType": "float32",
+                  "sizes": [
+                    {
+                      "alignment": 4,
+                      "kind": "uniform",
+                      "value": 4,
+                    },
+                  ],
                 },
               },
             ],
             "kind": "struct",
+            "sizes": [
+              {
+                "alignment": 16,
+                "kind": "uniform",
+                "value": 16,
+              },
+            ],
           },
           "elementVarLayout": {
             "binding": {
@@ -354,16 +675,37 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                   "type": {
                     "kind": "scalar",
                     "scalarType": "float32",
+                    "sizes": [
+                      {
+                        "alignment": 4,
+                        "kind": "uniform",
+                        "value": 4,
+                      },
+                    ],
                   },
                 },
               ],
               "kind": "struct",
+              "sizes": [
+                {
+                  "alignment": 16,
+                  "kind": "uniform",
+                  "value": 16,
+                },
+              ],
             },
           },
           "kind": "constantBuffer",
+          "sizes": [
+            {
+              "kind": "descriptorTableSlot",
+              "value": 1,
+            },
+          ],
         },
       },
     ],
+    "version": "1.1",
   },
 }
 `;
@@ -423,6 +765,7 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
             "type": {
               "kind": "scalar",
               "scalarType": "uint32",
+              "sizes": [],
             },
           },
         ],
@@ -435,7 +778,22 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
               "scalarType": "float32",
             },
             "kind": "vector",
+            "sizes": [],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "vertexIndex",
+              "semanticName": "SV_VERTEXID",
+              "type": {
+                "kind": "scalar",
+                "scalarType": "uint32",
+                "sizes": [],
+              },
+            },
+          ],
         },
         "stage": "vertex",
       },
@@ -452,6 +810,7 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                 "scalarType": "float32",
               },
               "kind": "vector",
+              "sizes": [],
             },
           },
         ],
@@ -469,11 +828,134 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
               "scalarType": "float32",
             },
             "kind": "vector",
+            "sizes": [
+              {
+                "kind": "varyingOutput",
+                "value": 1,
+              },
+            ],
           },
+        },
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "position",
+              "semanticName": "SV_POSITION",
+              "type": {
+                "elementCount": 4,
+                "elementType": {
+                  "kind": "scalar",
+                  "scalarType": "float32",
+                },
+                "kind": "vector",
+                "sizes": [],
+              },
+            },
+          ],
         },
         "stage": "fragment",
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [
+        {
+          "binding": {
+            "index": 0,
+            "kind": "descriptorTableSlot",
+          },
+          "name": "Globals",
+          "type": {
+            "containerVarLayout": {
+              "binding": {
+                "index": 0,
+                "kind": "descriptorTableSlot",
+              },
+            },
+            "elementType": {
+              "fields": [
+                {
+                  "binding": {
+                    "elementStride": 0,
+                    "kind": "uniform",
+                    "offset": 0,
+                    "size": 4,
+                  },
+                  "name": "time",
+                  "type": {
+                    "kind": "scalar",
+                    "scalarType": "float32",
+                    "sizes": [
+                      {
+                        "alignment": 4,
+                        "kind": "uniform",
+                        "value": 4,
+                      },
+                    ],
+                  },
+                },
+              ],
+              "kind": "struct",
+              "sizes": [
+                {
+                  "alignment": 16,
+                  "kind": "uniform",
+                  "value": 16,
+                },
+              ],
+            },
+            "elementVarLayout": {
+              "binding": {
+                "elementStride": 0,
+                "kind": "uniform",
+                "offset": 0,
+                "size": 16,
+              },
+              "type": {
+                "fields": [
+                  {
+                    "binding": {
+                      "elementStride": 0,
+                      "kind": "uniform",
+                      "offset": 0,
+                      "size": 4,
+                    },
+                    "name": "time",
+                    "type": {
+                      "kind": "scalar",
+                      "scalarType": "float32",
+                      "sizes": [
+                        {
+                          "alignment": 4,
+                          "kind": "uniform",
+                          "value": 4,
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "kind": "struct",
+                "sizes": [
+                  {
+                    "alignment": 16,
+                    "kind": "uniform",
+                    "value": 16,
+                  },
+                ],
+              },
+            },
+            "kind": "constantBuffer",
+            "sizes": [
+              {
+                "kind": "descriptorTableSlot",
+                "value": 1,
+              },
+            ],
+          },
+        },
+      ],
+    },
     "parameters": [
       {
         "binding": {
@@ -501,10 +983,24 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                 "type": {
                   "kind": "scalar",
                   "scalarType": "float32",
+                  "sizes": [
+                    {
+                      "alignment": 4,
+                      "kind": "uniform",
+                      "value": 4,
+                    },
+                  ],
                 },
               },
             ],
             "kind": "struct",
+            "sizes": [
+              {
+                "alignment": 16,
+                "kind": "uniform",
+                "value": 16,
+              },
+            ],
           },
           "elementVarLayout": {
             "binding": {
@@ -526,16 +1022,37 @@ fn fmain(@builtin(position) position_0 : vec4<f32>) -> pixelOutput_0
                   "type": {
                     "kind": "scalar",
                     "scalarType": "float32",
+                    "sizes": [
+                      {
+                        "alignment": 4,
+                        "kind": "uniform",
+                        "value": 4,
+                      },
+                    ],
                   },
                 },
               ],
               "kind": "struct",
+              "sizes": [
+                {
+                  "alignment": 16,
+                  "kind": "uniform",
+                  "value": 16,
+                },
+              ],
             },
           },
           "kind": "constantBuffer",
+          "sizes": [
+            {
+              "kind": "descriptorTableSlot",
+              "value": 1,
+            },
+          ],
         },
       },
     ],
+    "version": "1.1",
   },
 }
 `;
@@ -566,9 +1083,28 @@ fn validGuard(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
                 "scalarType": "uint32",
               },
               "kind": "vector",
+              "sizes": [],
             },
           },
         ],
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "dispatchThreadId",
+              "semanticName": "SV_DISPATCHTHREADID",
+              "type": {
+                "elementCount": 2,
+                "elementType": {
+                  "kind": "scalar",
+                  "scalarType": "uint32",
+                },
+                "kind": "vector",
+                "sizes": [],
+              },
+            },
+          ],
+        },
         "stage": "compute",
         "threadGroupSize": [
           1,
@@ -577,7 +1113,12 @@ fn validGuard(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
         ],
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [],
+    },
     "parameters": [],
+    "version": "1.1",
   },
 }
 `;
@@ -608,9 +1149,28 @@ fn commentGuard(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
                 "scalarType": "uint32",
               },
               "kind": "vector",
+              "sizes": [],
             },
           },
         ],
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "dispatchThreadId",
+              "semanticName": "SV_DISPATCHTHREADID",
+              "type": {
+                "elementCount": 2,
+                "elementType": {
+                  "kind": "scalar",
+                  "scalarType": "uint32",
+                },
+                "kind": "vector",
+                "sizes": [],
+              },
+            },
+          ],
+        },
         "stage": "compute",
         "threadGroupSize": [
           1,
@@ -619,7 +1179,12 @@ fn commentGuard(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
         ],
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [],
+    },
     "parameters": [],
+    "version": "1.1",
   },
 }
 `;
@@ -652,9 +1217,28 @@ fn main(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
                 "scalarType": "uint32",
               },
               "kind": "vector",
+              "sizes": [],
             },
           },
         ],
+        "scope": {
+          "kind": "none",
+          "parameters": [
+            {
+              "name": "dispatchThreadId",
+              "semanticName": "SV_DISPATCHTHREADID",
+              "type": {
+                "elementCount": 2,
+                "elementType": {
+                  "kind": "scalar",
+                  "scalarType": "uint32",
+                },
+                "kind": "vector",
+                "sizes": [],
+              },
+            },
+          ],
+        },
         "stage": "compute",
         "threadGroupSize": [
           1,
@@ -663,7 +1247,12 @@ fn main(@builtin(global_invocation_id) dispatchThreadId_0 : vec3<u32>)
         ],
       },
     ],
+    "globalScope": {
+      "kind": "none",
+      "parameters": [],
+    },
     "parameters": [],
+    "version": "1.1",
   },
 }
 `;

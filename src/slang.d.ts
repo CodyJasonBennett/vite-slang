@@ -6,12 +6,15 @@ interface SlangReflectionUserAttribute {
 type SlangReflectionBinding =
   | {
       kind: 'uniform'
-      offset: number
-      size: number
+      offset: number | 'unbounded' | 'unknown'
+      size: number | 'unbounded' | 'unknown'
+      elementStride: number | 'unbounded' | 'unknown'
     }
   | {
-      kind: 'descriptorTableSlot'
-      index: number
+      kind: Exclude<SlangReflectionSize['kind'], 'uniform'>
+      index: number | 'unbounded' | 'unknown'
+      space?: number | 'unbounded' | 'unknown'
+      count?: number | 'unbounded' | 'unknown'
     }
 
 type SlangScalarType = `${'uint' | 'int'}${8 | 16 | 32 | 64}` | `${'float'}${16 | 32 | 64}`
@@ -60,7 +63,40 @@ type SlangFormat =
   | 'r64i'
   | 'bgra8'
 
-type SlangReflectionType =
+type SlangReflectionSize =
+  | {
+      kind: // 'constantBuffer'
+        // | 'shaderResource'
+        // | 'unorderedAccess'
+        | 'varyingInput'
+        | 'varyingOutput'
+        // | 'samplerState'
+        // | 'pushConstantBuffer'
+        | 'descriptorTableSlot'
+        | 'specializationConstant'
+        // | 'mixed'
+        | 'registerSpace'
+        | 'subElementRegisterSpace'
+        | 'generic'
+        // | 'rayPayload'
+        // | 'hitAttributes'
+        // | 'callablePayload'
+        // | 'shaderRecord'
+        | 'existentialTypeParam'
+        | 'existentialObjectParam'
+      // | 'inputAttachmentIndex'
+      // | 'metalArgumentBufferElement'
+      // | 'metalAttribute'
+      // | 'metalPayload'
+      value: number | 'unbounded' | 'unknown'
+    }
+  | {
+      kind: 'uniform'
+      value: number | 'unbounded' | 'unknown'
+      alignment: number | 'unbounded' | 'unknown'
+    }
+
+type SlangReflectionType = (
   | {
       kind: 'struct'
       name: string
@@ -90,27 +126,50 @@ type SlangReflectionType =
   | {
       kind: 'samplerState'
     }
+) & {
+  sizes?: SlangReflectionSize[]
+}
 
 interface SlangReflectionParameter {
-  binding: SlangReflectionBinding
+  binding?: SlangReflectionBinding
+  bindings?: SlangReflectionBinding[]
   format?: SlangFormat
-  name: string
+  name?: string
   type: SlangReflectionType
   userAttribs?: SlangReflectionUserAttribute[]
+  stage?: string
+  semanticName?: string
+  semanticIndex?: number
 }
+
+type SlangReflectionScope =
+  | {
+      kind: 'none'
+      parameters: SlangReflectionParameter[]
+    }
+  | {
+      kind: 'constantBuffer'
+      binding?: SlangReflectionBinding
+      bindings?: SlangReflectionBinding[]
+      parameters: SlangReflectionParameter[]
+      stage?: string
+    }
 
 interface SlangReflectionEntryPoint {
   name: string
-  parameters: SlangReflectionParameter[]
-  stage: string
-  threadGroupSize: [number, number, number]
+  parameters?: SlangReflectionParameter[]
+  stage?: string
+  threadGroupSize?: [number, number, number]
   userAttribs?: SlangReflectionUserAttribute[]
+  scope: SlangReflectionScope
 }
 
 interface SlangReflectionJSON {
-  entryPoints: SlangReflectionEntryPoint[]
+  entryPoints?: SlangReflectionEntryPoint[]
   parameters: SlangReflectionParameter[]
-  hashedStrings: Record<string, number>
+  hashedStrings?: Record<string, number>
+  version: '1.1'
+  globalScope: SlangReflectionScope
 }
 
 declare module '*.slang' {
