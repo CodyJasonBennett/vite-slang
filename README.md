@@ -1,3 +1,7 @@
+[![Size](https://img.shields.io/badge/dynamic/json?label=gzip&style=flat&colorA=000000&colorB=000000&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=vite-slang)](https://unpkg.com/vite-slang)
+[![Version](https://img.shields.io/npm/v/vite-slang?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/vite-slang)
+[![Downloads](https://img.shields.io/npm/dt/vite-slang.svg?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/vite-slang)
+
 # vite-slang
 
 Vite plugin for importing and compiling Slang shaders to run on the web (WebGL/WebGPU).
@@ -34,7 +38,7 @@ struct FragmentStageOutput
 [shader("vertex")]
 VertexStageOutput vertexMain(VertexStageInput input) : SV_Position
 {
-	VertexStageOutput output;
+    VertexStageOutput output;
     output.positionClipSpace = float4(input.position.xy, 1);
     return output;
 }
